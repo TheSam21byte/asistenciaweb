@@ -1,0 +1,94 @@
+/* Asegura que ocupe toda la pantalla */
+html, body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #0f0f0f;
+  font-family: "Poppins", sans-serif;
+  overflow: hidden;
+}
+
+/* Contenedor principal con fondo completo */
+.login-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(to right, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.95)),
+    url("https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1350&q=80");
+  background-size: cover;
+  background-position: center;
+}
+
+/* Tarjeta de login */
+.login-card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 40px;
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  width: 400px;
+  text-align: center;
+  color: #fff;
+}
+
+/* Título */
+.login-card h2 {
+  margin-bottom: 20px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* Inputs */
+.login-card input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 8px;
+  outline: none;
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 16px;
+  transition: box-shadow 0.3s ease;
+}
+
+.login-card input:focus {
+  box-shadow: 0 0 8px rgba(88, 101, 242, 0.8);
+}
+
+/* Botón */
+.login-card button {
+  width: 100%;
+  background: linear-gradient(90deg, #6a11cb, #2575fc);
+  border: none;
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 15px;
+  transition: transform 0.2s, opacity 0.3s;
+}
+
+.login-card button:hover {
+  transform: scale(1.03);
+  opacity: 0.9;
+}
+
+/* Mensaje de error */
+.error {
+  color: #ff6b6b;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+/* Footer */
+.footer {
+  font-size: 13px;
+  color: #ddd;
+  margin-top: 25px;
+}

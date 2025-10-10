@@ -1,0 +1,119 @@
+/* === Fondo completo estilo tecnológico === */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: "Poppins", sans-serif;
+  background-color: #0b0b0c;
+}
+
+/* Contenedor principal */
+.dashboard-container {
+  min-height: 100vh;
+  width: 100vw;
+  background: linear-gradient(
+      rgba(10, 10, 10, 0.85),
+      rgba(15, 15, 15, 0.95)
+    ),
+    url("https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1350&q=80");
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* === Header === */
+.dashboard-header {
+  text-align: center;
+  margin-top: 60px;
+  margin-bottom: 40px;
+}
+
+.dashboard-header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: #ffffff;
+}
+
+.dashboard-header p {
+  font-size: 1.1rem;
+  color: #c9c9c9;
+  margin-top: 10px;
+}
+
+/* === Contenido principal === */
+.dashboard-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+  width: 100%;
+}
+
+/* Tarjeta con efecto glass */
+.dashboard-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  padding: 40px;
+  width: 500px;
+  text-align: center;
+  animation: fadeIn 0.8s ease forwards;
+}
+
+/* Animación sutil de aparición */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Texto descriptivo */
+.dashboard-card p {
+  font-size: 1.1rem;
+  color: #e1e1e1;
+  margin-bottom: 25px;
+  line-height: 1.5;
+}
+
+/* === Botón de cámara === */
+.camera-button {
+  background: linear-gradient(90deg, #6a11cb, #2575fc);
+  color: #fff;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.camera-button:hover {
+  transform: scale(1.05);
+  background: linear-gradient(90deg, #8e2de2, #4a00e0);
+}
+
+/* === Video === */
+.video-container {
+  margin-top: 25px;
+  display: flex;
+  justify-content: center;
+}
+
+.video-container video {
+  display: none;
+  border-radius: 12px;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  background-color: #000;
+}
