@@ -6,13 +6,18 @@ from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 from db.db import get_connection
-from models import LoginRequest, EstudianteResponse
-
+from models import LoginRequest, EstudianteResponse, AccesoData
+from datetime import datetime
 
 # --- Configuración del limitador ---
 limiter = Limiter(key_func=get_remote_address)
 
-app = FastAPI(title="API de Captura Facial UNAMAD")
+app = FastAPI(
+    title="API de Captura Facial UNAMAD",
+    docs_url=None,
+    redoc_url=None,
+    openapi_url=None
+    )
 
 app.state.limiter = limiter
 app.add_middleware(SlowAPIMiddleware)
@@ -91,4 +96,63 @@ def validar_estudiante(request: Request, data: LoginRequest):
 
     finally:
         cur.close()
+        conn.close()
+
+
+@app.post("/api/acceso")
+def registrar_acceso(data: AccesoData):
+    conn = get_connection()
+    if not conn:
+        raise HTTPException(status_code=500, detail="Error de conexión con la base de datos")
+
+    cursor = conn.cursor(dictionary=True)
+
+    try:
+        # 1️⃣ Buscar estudiante activo
+        cursor.execute("SELECT * FROM estudiante WHERE codigo = %s AND activo = 1", (data.codigo_estudiante,))
+        estudiante = cursor.fetchone()
+
+        if not estudiante:
+            raise HTTPException(status_code=404, detail="Estudiante no encontrado o inactivo")
+
+        # 2️⃣ Obtener último periodo
+        cursor.execute("SELECT id_periodo FROM periodo ORDER BY id_periodo DESC LIMIT 1")
+        periodo = cursor.fetchone()
+        if not periodo:
+            raise HTTPException(status_code=400, detail="No existe periodo académico registrado")
+
+        id_estudiante = estudiante["id_estudiante"]
+        id_periodo = periodo["id_periodo"]
+
+        # 3️⃣ Registrar evento de acceso
+        cursor.execute("""
+            INSERT INTO evento_acceso (id_estudiante, id_aula, id_periodo, validado, direccion, snapshot_path, ts)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """, (
+            id_estudiante,
+            1,  # id_aula por defecto o ajusta según el aula real
+            id_periodo,
+            1,  # validado = 1 (acceso permitido)
+            data.direccion,
+            None,  # snapshot opcional
+            datetime.now()
+        ))
+        conn.commit()
+
+        id_evento = cursor.lastrowid
+
+        return {
+            "status": "ok",
+            "mensaje": "Acceso permitido",
+            "codigo_estudiante": data.codigo_estudiante,
+            "direccion": data.direccion,
+            "id_evento": id_evento
+        }
+
+    except Exception as e:
+        conn.rollback()
+        raise HTTPException(status_code=500, detail=str(e))
+
+    finally:
+        cursor.close()
         conn.close()
