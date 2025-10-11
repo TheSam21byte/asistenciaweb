@@ -9,3 +9,9 @@ class EstudianteResponse(BaseModel):
     nombres: str
     apellidos: str
     correo_institucional: str
+
+class AccesoData(BaseModel):
+    codigo_estudiante: str
+    direccion: str
+    distancia_s1: float
+    distancia_s2: float
