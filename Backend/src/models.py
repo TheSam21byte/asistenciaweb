@@ -11,7 +11,8 @@ class EstudianteResponse(BaseModel):
     correo_institucional: str
 
 class AccesoData(BaseModel):
-    codigo_estudiante: str
+    codigo: str
+    id_aula: int
+    id_periodo: int
+    validado: int
     direccion: str
-    distancia_s1: float
-    distancia_s2: float

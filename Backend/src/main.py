@@ -8,6 +8,7 @@ from slowapi.middleware import SlowAPIMiddleware
 from db.db import get_connection
 from models import LoginRequest, EstudianteResponse, AccesoData
 from datetime import datetime
+from services.face_routes import router as face_router
 
 # --- Configuración del limitador ---
 limiter = Limiter(key_func=get_remote_address)
@@ -109,7 +110,7 @@ def registrar_acceso(data: AccesoData):
 
     try:
         # 1️⃣ Buscar estudiante activo
-        cursor.execute("SELECT * FROM estudiante WHERE codigo = %s AND activo = 1", (data.codigo_estudiante,))
+        cursor.execute("SELECT * FROM estudiante WHERE codigo = %s AND activo = 1", (data.codigo,))
         estudiante = cursor.fetchone()
 
         if not estudiante:
@@ -126,15 +127,14 @@ def registrar_acceso(data: AccesoData):
 
         # 3️⃣ Registrar evento de acceso
         cursor.execute("""
-            INSERT INTO evento_acceso (id_estudiante, id_aula, id_periodo, validado, direccion, snapshot_path, ts)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO evento_acceso (id_estudiante, id_aula, id_periodo, validado, direccion, ts)
+            VALUES (%s, %s, %s, %s, %s, %s)
         """, (
             id_estudiante,
-            1,  # id_aula por defecto o ajusta según el aula real
+            data.id_aula,  # id_aula por defecto o ajusta según el aula real
             id_periodo,
-            1,  # validado = 1 (acceso permitido)
+            data.validado,  # validado = 1 (acceso permitido)
             data.direccion,
-            None,  # snapshot opcional
             datetime.now()
         ))
         conn.commit()
@@ -144,7 +144,7 @@ def registrar_acceso(data: AccesoData):
         return {
             "status": "ok",
             "mensaje": "Acceso permitido",
-            "codigo_estudiante": data.codigo_estudiante,
+            "codigo": data.codigo,
             "direccion": data.direccion,
             "id_evento": id_evento
         }
@@ -156,3 +156,5 @@ def registrar_acceso(data: AccesoData):
     finally:
         cursor.close()
         conn.close()
+        
+app.include_router(face_router, prefix="/api")
