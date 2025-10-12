@@ -158,3 +158,4 @@ def registrar_acceso(data: AccesoData):
         conn.close()
         
 app.include_router(face_router, prefix="/api")
+    
