@@ -1,0 +1,3 @@
+# Ignorar modelos grandes
+Backend/facial/modeloLBPHFace.xml
+Backend/src/modeloLBPHFace.xml
