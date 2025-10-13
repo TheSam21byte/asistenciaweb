@@ -21,11 +21,11 @@ def get_connection():
         database="dbia"
     )
 
-# Ruta base para guardar los datasets
-dataPath = 'D:/PROYECTOS/IA/asistenciaweb/Backend/output/2025-1'
-
+# ✅ Obtener ruta absoluta correcta sin depender del working dir
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # -> asistenciaweb/Backend
+dataPath = os.path.join(BASE_DIR, "output", "2025-1")
 # Cantidad de fotos a capturar
-MAX_FOTOS = 10
+MAX_FOTOS = 150
 
 # =================================================================
 # INICIO DE CAPTURA

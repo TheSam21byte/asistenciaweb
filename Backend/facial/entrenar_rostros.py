@@ -3,6 +3,10 @@ import os
 import numpy as np
 
 dataPath = r'D:/PROYECTOS/IA/asistenciaweb/Backend/output/2025-1'
+save_dir = r'D:/PROYECTOS/IA/asistenciaweb/Backend/facial'
+os.makedirs(save_dir, exist_ok=True)  # Crea la carpeta si no existe
+model_path = os.path.join(save_dir, 'modeloLBPHFace.xml')
+
 peopleList = os.listdir(dataPath)
 print('Lista de personas:', peopleList)
 
@@ -43,5 +47,5 @@ print("Entrenando...")
 face_recognizer.train(facesData, np.array(labels))
 
 # Guardar el modelo obtenido
-face_recognizer.write('modeloLBPHFace.xml')
-print("Modelo almacenado...")
+face_recognizer.write(model_path)
+print(f" Modelo almacenado correctamente en: {model_path}")

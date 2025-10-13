@@ -9,6 +9,12 @@ from db.db import get_connection
 from models import LoginRequest, EstudianteResponse, AccesoData
 from datetime import datetime
 from services.face_routes import router as face_router
+import base64
+import cv2
+import numpy as np
+import os
+from fastapi import Body
+
 
 # --- Configuración del limitador ---
 limiter = Limiter(key_func=get_remote_address)
@@ -22,6 +28,7 @@ app = FastAPI(
 
 app.state.limiter = limiter
 app.add_middleware(SlowAPIMiddleware)
+app.include_router(face_router, prefix="/api")
 
 # --- Manejo de errores personalizado para RateLimitExceeded ---
 @app.exception_handler(RateLimitExceeded)
@@ -156,5 +163,3 @@ def registrar_acceso(data: AccesoData):
     finally:
         cursor.close()
         conn.close()
-        
-app.include_router(face_router, prefix="/api")

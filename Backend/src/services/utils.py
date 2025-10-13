@@ -9,3 +9,4 @@ def strip_accents(s: str) -> str:
 
 def generar_hash_path(path: str) -> str:
     return hashlib.sha256(path.encode()).hexdigest()
+

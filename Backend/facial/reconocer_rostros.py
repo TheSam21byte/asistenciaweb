@@ -13,30 +13,6 @@ API_URL = "http://127.0.0.1:8000/api/acceso"  # Ajusta IP y puerto si es necesar
 ultimo_registro = {}
 COOLDOWN = 10  # segundos
 
-#registrar_evento
-def registrar_evento(codigo=None, validado=1, id_aula=1, id_periodo=1, direccion="ENTRA"):
-    """
-    Envía los datos al endpoint /api/acceso.
-    - codigo: código del estudiante, o '00000000' para desconocidos.
-    - validado: 1 para estudiante reconocido, 0 para desconocido.
-    """
-    payload = {
-        "codigo": str(codigo) if codigo else "00000000",
-        "id_aula": id_aula,
-        "id_periodo": id_periodo,
-        "validado": validado,
-        "direccion": direccion,
-    }
-
-    try:
-        response = requests.post(API_URL, json=payload, timeout=5)
-        if response.status_code == 200:
-            print(f"[INFO] Evento registrado: {response.json()}")
-        else:
-            print(f"[ERROR] Falló registro: {response.status_code} - {response.text}")
-    except Exception as e:
-        print(f"[ERROR] No se pudo conectar al backend: {e}")
-
 # =========================
 # CONFIGURACIÓN DIRECTORIOS Y MODELO
 # =========================
