@@ -99,9 +99,6 @@ async def reconocer_rostro(request: Request):
             else:
                 codigo = str(id_pred)
 
-            # ---------------------------
-            # Registrar evento en MySQL
-            # ---------------------------
             try:
                 conexion = get_connection()
                 cursor = conexion.cursor()

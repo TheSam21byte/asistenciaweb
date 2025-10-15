@@ -116,14 +116,14 @@ def registrar_acceso(data: AccesoData):
     cursor = conn.cursor(dictionary=True)
 
     try:
-        # 1️⃣ Buscar estudiante activo
+        #  Buscar estudiante activo
         cursor.execute("SELECT * FROM estudiante WHERE codigo = %s AND activo = 1", (data.codigo,))
         estudiante = cursor.fetchone()
 
         if not estudiante:
             raise HTTPException(status_code=404, detail="Estudiante no encontrado o inactivo")
 
-        # 2️⃣ Obtener último periodo
+        #  Obtener último periodo
         cursor.execute("SELECT id_periodo FROM periodo ORDER BY id_periodo DESC LIMIT 1")
         periodo = cursor.fetchone()
         if not periodo:
@@ -138,9 +138,9 @@ def registrar_acceso(data: AccesoData):
             VALUES (%s, %s, %s, %s, %s, %s)
         """, (
             id_estudiante,
-            data.id_aula,  # id_aula por defecto o ajusta según el aula real
+            data.id_aula, 
             id_periodo,
-            data.validado,  # validado = 1 (acceso permitido)
+            data.validado,  
             data.direccion,
             datetime.now()
         ))

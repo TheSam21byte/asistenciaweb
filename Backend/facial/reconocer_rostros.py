@@ -9,13 +9,10 @@ from urllib.parse import quote_plus
 import requests 
 
 # URL de tu backend FastAPI para registrar el acceso
-API_URL = "http://127.0.0.1:8000/api/acceso"  # Ajusta IP y puerto si es necesario
+API_URL = "http://127.0.0.1:8000/api/acceso"  
 ultimo_registro = {}
 COOLDOWN = 10  # segundos
 
-# =========================
-# CONFIGURACIÓN DIRECTORIOS Y MODELO
-# =========================
 dataPath = r"D:/PROYECTOS/IA/asistenciaweb/Backend/output/2025-1"
 current_dir = os.path.dirname(os.path.abspath(__file__))
 model_path = os.path.join(current_dir, "modeloLBPHFace", "modeloLBPHFace.xml")
@@ -23,11 +20,9 @@ model_path = os.path.join(current_dir, "modeloLBPHFace", "modeloLBPHFace.xml")
 imagePaths = os.listdir(dataPath)
 print("imagePaths:", imagePaths)
 
-# Crear un reconocedor facial y cargar el modelo previamente entrenado
 face_recognizer = cv2.face.LBPHFaceRecognizer_create()
 face_recognizer.read(r"D:/PROYECTOS/IA/asistenciaweb/Backend/facial/modeloLBPHFace.xml") 
 
-# Inicializar el clasificador de detección de rostros
 faceClassif = cv2.CascadeClassifier(cv2.data.haarcascades + 
                                     "haarcascade_frontalface_default.xml")
 
@@ -38,16 +33,12 @@ if not cap.isOpened():
 
 desconocidos = set()
 
-# Directorio para almacenar las imágenes de personas desconocidas
 desconocidos_dir = 'Desconocidos'  
 if not os.path.exists(desconocidos_dir):
     os.makedirs(desconocidos_dir)
 
-peru_offset = datetime.timedelta(hours=-5)  # Perú tiene UTC-5
+peru_offset = datetime.timedelta(hours=-5) 
 
-# =========================
-# BLOQUE WHATSAPP (con cooldown)
-# =========================
 telefono_peru = "51929370577"  
 WA_COOLDOWN_S = 15             
 _last_wa_ts = 0.0              
@@ -75,9 +66,6 @@ def enviar_whatsapp_alerta(mensaje: str):
     except Exception as e:
         print("Error al abrir WhatsApp:", e)
 
-# =========================
-# BLOQUE TELEGRAM (con cooldown)
-# =========================
 
 TELEGRAM_TOKEN = os.getenv("TG_BOT_TOKEN", "8271956332:AAExwkK_Pftfrq2SXD92l3SfpODeu57kazU")
 CHAT_ID = os.getenv("TG_CHAT_ID", "8157360664")
@@ -107,9 +95,7 @@ def enviar_telegram_alerta(mensaje: str):
     except Exception as e:
         print("❌ Error al conectar con Telegram:", e)
 
-# =========================
-# FLAGS (por si quieres desactivar/activar canales de alerta)
-# =========================
+
 ENVIAR_WHATSAPP = True
 ENVIAR_TELEGRAM = True
 
@@ -123,20 +109,17 @@ while True:
     if not ret:
         break
 
-    # Aumentar resolución para mayor detalle facial
     frame = cv2.resize(frame, (800, 600))
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-    # 🔹 Mejora de contraste y reducción de ruido
     gray = cv2.equalizeHist(gray)               # Corrige diferencias de iluminación
     gray = cv2.GaussianBlur(gray, (5, 5), 0)    # Suaviza el ruido y sombras
 
-    # 🔹 Detector más preciso
     faces = faceClassif.detectMultiScale(
         gray,
-        scaleFactor=1.1,     # Sensible a rostros pequeños o lejanos
-        minNeighbors=4,      # Requiere coincidencias cercanas (menos falsos positivos)
-        minSize=(80, 80)     # Ignora detecciones muy pequeñas
+        scaleFactor=1.1,   
+        minNeighbors=4,      
+        minSize=(80, 80)     
     )
     
     auxFrame = gray.copy()
@@ -150,7 +133,7 @@ while True:
         result = face_recognizer.predict(rostro)
 
         # Dibujar el rectángulo del rostro detectado y mostrar el resultado
-        if result[1] < 70:  # Reconocido
+        if result[1] < 70:  
             cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
             codigo = imagePaths[result[0]]
             cv2.putText(frame, f"{codigo} ({result[1]:.2f})", (x, y - 10),
@@ -169,7 +152,6 @@ while True:
                 ultimo_registro[codigo] = ahora
 
         else:
-            # 🚨 Desconocido
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
             cv2.putText(frame, f"Desconocido ({result[1]:.2f})", (x, y - 10),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2, cv2.LINE_AA)
@@ -178,7 +160,6 @@ while True:
             if (x, y, w, h) not in desconocidos:
                 desconocidos.add((x, y, w, h))
 
-                # Obtener la hora actual en la zona horaria de Perú
                 current_time = datetime.datetime.now(
                     datetime.timezone(peru_offset)
                 ).strftime("%Y-%m-%d_%H-%M-%S")
@@ -191,15 +172,14 @@ while True:
 
                 print(f"[ALERTA] Persona desconocida detectada y guardada: {unknown_image}")
 
-                # Emitir un sonido de alarma
                 winsound.Beep(1000, 200)
                 registrar_evento(codigo="00000000", validado=0)
                 # Enviar alertas (cada una con su propio cooldown)
-                #alerta_msg = "🚨 Alerta: Persona Desconocida detectada"
+                alerta_msg = "🚨 Alerta: Persona Desconocida detectada"
                 #if ENVIAR_WHATSAPP:
                 #    enviar_whatsapp_alerta(alerta_msg)
-                #if ENVIAR_TELEGRAM:
-                #    enviar_telegram_alerta(alerta_msg)
+                if ENVIAR_TELEGRAM:
+                    enviar_telegram_alerta(alerta_msg)
 
     # Mostrar el resultado del reconocimiento
     cv2.imshow('Frame', frame)
