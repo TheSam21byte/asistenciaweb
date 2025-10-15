@@ -157,6 +157,7 @@ while True:
                         cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 0, 255), 2, cv2.LINE_AA)
 
             # PARA ESTUDIANTE DESCONOCIDO
+            ahora = time.time()
             if (x, y, w, h) not in desconocidos:
                 desconocidos.add((x, y, w, h))
 

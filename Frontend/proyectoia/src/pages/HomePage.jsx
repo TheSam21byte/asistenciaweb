@@ -8,6 +8,8 @@ export default function HomePage() {
   const [codigoEstudiante, setCodigoEstudiante] = useState(null);
   const [mensaje, setMensaje] = useState("");
   const [cargando, setCargando] = useState(false);
+  const [curso, setCurso] = useState(null); 
+  const [aula, setAula] = useState(null);
 
   useEffect(() => {
     let stream; // Guardamos el stream para cerrarlo después
@@ -58,9 +60,14 @@ export default function HomePage() {
       if (response.ok && data.success) {
         setCodigoEstudiante(data.codigo);
         setMensaje(`✅ ${data.mensaje} (conf: ${data.conf?.toFixed(2) ?? "N/A"})`);
+        setCurso(data.curso);
+        setAula(data.aula);
       } else {
         setCodigoEstudiante(null);
         setMensaje(`❌ ${data.mensaje || "No reconocido"}`);
+        setCurso(null);
+        setAula(null);
+
       }
     } catch (error) {
       console.error("Error enviando imagen:", error);
@@ -104,6 +111,16 @@ export default function HomePage() {
               <span>{codigoEstudiante}</span>
             </div>
           )}
+
+          {curso && aula && (
+            <div className="curso-info">
+              <h3>📘 Curso actual</h3>
+              <p>{curso}</p>
+              <h4>🏫 Aula</h4>
+              <p>{aula}</p>
+            </div>
+          )}
+
         </div>
       </div>
     </div>

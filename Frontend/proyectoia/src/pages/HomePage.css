@@ -142,7 +142,27 @@ html, body {
   color: #fff;
 }
 
+.curso-info {
+  margin-top: 15px;
+  background: #f0f4ff;
+  border-radius: 10px;
+  padding: 12px 18px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.curso-info h3, .curso-info h4 {
+  margin: 4px 0;
+  color: #1a237e;
+}
+
+.curso-info p {
+  margin: 2px 0 8px;
+  font-weight: 500;
+}
+
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
+

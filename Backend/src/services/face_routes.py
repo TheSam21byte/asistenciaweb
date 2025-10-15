@@ -15,6 +15,9 @@ router = APIRouter()
 conexion = get_connection()
 BASE_OUTPUT = Path(__file__).resolve().parent.parent / "output" / "2025-1"
 
+DESCONOCIDOS_DIR = Path(__file__).resolve().parent.parent / "Desconocidos"
+DESCONOCIDOS_DIR.mkdir(exist_ok=True)
+
 
 @router.post("/registrar-rostro/{codigo}")
 def registrar_rostro(codigo: str):
@@ -134,17 +137,84 @@ async def reconocer_rostro(request: Request):
                     cursor.close()
                 if 'conexion' in locals():
                     conexion.close()
+            
+            # === Determinar curso actual según la hora ===
+            hora_actual = datetime.now().hour
+            if 15 <= hora_actual < 17:
+                curso_actual = "Ingeniería Económica"
+            elif 17 <= hora_actual < 19:
+                curso_actual = "Redes Neuronales"
+            elif 19 <= hora_actual < 21:
+                curso_actual = "Inteligencia Artificial"
+            else:
+                curso_actual = "Fuera de horario académico"
+                
+            # Aula fija por ahora
+            aula_actual = "AV-202ISI"
 
             return {
                 "success": True,
                 "mensaje": "Usuario reconocido",
                 "codigo": codigo,
-                "conf": float(conf)
+                "conf": float(conf),
+                "curso": curso_actual,
+                "aula": aula_actual
             }
 
+        #DESCONOCIDO 
+        
         else:
-            return {"success": False, "mensaje": "Rostro desconocido", "codigo": None, "conf": float(conf)}
+            try:
+                timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+                filename = f"desconocido_{timestamp}.jpg"
+                save_path = DESCONOCIDOS_DIR / filename
+                
+                # Recortar y guardar el rostro
+                rostro_save = frame[y:y+h, x:x+w]
+                rostro_save = cv2.resize(rostro_save, (200, 200), interpolation=cv2.INTER_CUBIC)
+                cv2.imwrite(str(save_path), rostro_save)
 
+                print(f"[ALERTA] Rostro desconocido guardado en {save_path}")
+
+                # === Registrar evento en la base de datos ===
+                try:
+                    conexion = get_connection()
+                    cursor = conexion.cursor()
+
+                    sql = """
+                        INSERT INTO evento_acceso (ts, id_estudiante, id_aula, id_periodo, validado, direccion)
+                        VALUES (%s, %s, %s, %s, %s, %s)
+                    """
+                    ts = datetime.now()
+                    id_estudiante = 5
+                    id_aula = 1
+                    id_periodo = 1
+                    validado = 0  # no validado
+                    direccion = "ENTRA"
+
+                    cursor.execute(sql, (ts, id_estudiante, id_aula, id_periodo, validado, direccion))
+                    conexion.commit()
+                    print(f"⚠️ Evento de persona desconocida registrado en BD ({filename})")
+
+                except Exception as db_error:
+                    print(f"❌ Error al registrar evento de desconocido: {db_error}")
+
+                finally:
+                    if 'cursor' in locals():
+                        cursor.close()
+                    if 'conexion' in locals():
+                        conexion.close()
+
+            except Exception as e:
+                print(f"❌ Error al guardar rostro desconocido: {e}")
+
+            return {
+                "success": False,
+                "mensaje": "Rostro desconocido (registrado en BD y guardado en carpeta)",
+                "codigo": None,
+                "conf": float(conf)
+            }
+            
     except HTTPException:
         raise
     except Exception as e:
