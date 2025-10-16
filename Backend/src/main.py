@@ -9,6 +9,12 @@ from db.db import get_connection
 from models import LoginRequest, EstudianteResponse, AccesoData
 from datetime import datetime
 from services.face_routes import router as face_router
+import base64
+import cv2
+import numpy as np
+import os
+from fastapi import Body
+
 
 # --- Configuración del limitador ---
 limiter = Limiter(key_func=get_remote_address)
@@ -22,6 +28,7 @@ app = FastAPI(
 
 app.state.limiter = limiter
 app.add_middleware(SlowAPIMiddleware)
+app.include_router(face_router, prefix="/api")
 
 # --- Manejo de errores personalizado para RateLimitExceeded ---
 @app.exception_handler(RateLimitExceeded)
@@ -109,14 +116,14 @@ def registrar_acceso(data: AccesoData):
     cursor = conn.cursor(dictionary=True)
 
     try:
-        # 1️⃣ Buscar estudiante activo
+        #  Buscar estudiante activo
         cursor.execute("SELECT * FROM estudiante WHERE codigo = %s AND activo = 1", (data.codigo,))
         estudiante = cursor.fetchone()
 
         if not estudiante:
             raise HTTPException(status_code=404, detail="Estudiante no encontrado o inactivo")
 
-        # 2️⃣ Obtener último periodo
+        #  Obtener último periodo
         cursor.execute("SELECT id_periodo FROM periodo ORDER BY id_periodo DESC LIMIT 1")
         periodo = cursor.fetchone()
         if not periodo:
@@ -131,9 +138,9 @@ def registrar_acceso(data: AccesoData):
             VALUES (%s, %s, %s, %s, %s, %s)
         """, (
             id_estudiante,
-            data.id_aula,  # id_aula por defecto o ajusta según el aula real
+            data.id_aula, 
             id_periodo,
-            data.validado,  # validado = 1 (acceso permitido)
+            data.validado,  
             data.direccion,
             datetime.now()
         ))

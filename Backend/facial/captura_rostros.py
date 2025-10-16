@@ -8,11 +8,6 @@ import subprocess
 
 from datetime import datetime
 
-# =================================================================
-# CONFIGURACIÓN
-# =================================================================
-
-# Conexión a la base de datos MySQL
 def get_connection():
     return mysql.connector.connect(
         host="localhost",
@@ -21,15 +16,9 @@ def get_connection():
         database="dbia"
     )
 
-# Ruta base para guardar los datasets
-dataPath = 'D:/PROYECTOS/IA/asistenciaweb/Backend/output/2025-1'
-
-# Cantidad de fotos a capturar
-MAX_FOTOS = 10
-
-# =================================================================
-# INICIO DE CAPTURA
-# =================================================================
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # -> asistenciaweb/Backend
+dataPath = os.path.join(BASE_DIR, "output", "2025-1")
+MAX_FOTOS = 150
 
 if len(sys.argv) > 1:
     codigo_estudiante = sys.argv[1]
@@ -65,19 +54,18 @@ while True:
     if not ret:
         break
 
-    frame = imutils.resize(frame, width=800)  # Aumenta el tamaño para más detalle
+    frame = imutils.resize(frame, width=800)  
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-    # 🔹 Mejora de contraste y reducción de ruido
     gray = cv2.equalizeHist(gray)
     gray = cv2.GaussianBlur(gray, (5, 5), 0)
 
     
     faces = faceClassif.detectMultiScale(
         gray,
-        scaleFactor=1.1,      # Más sensible a rostros pequeños o lejanos
-        minNeighbors=4,       # Requiere 4 detecciones cercanas (reduce falsos positivos)
-        minSize=(80, 80)      # Ignora cosas pequeñas que no son rostros
+        scaleFactor=1.1,      
+        minNeighbors=4,       
+        minSize=(80, 80)      
     )
 
     auxFrame = frame.copy()
@@ -93,7 +81,6 @@ while True:
         ruta_completa = os.path.join(personPath, nombre_archivo)
         cv2.imwrite(ruta_completa, rostro)
 
-        # Actualizar hash con el contenido del archivo
         with open(ruta_completa, "rb") as f:
             hash_md5.update(f.read())
 
@@ -110,18 +97,14 @@ while True:
 cap.release()
 cv2.destroyAllWindows()
 
-# =================================================================
-# REGISTRO EN BASE DE DATOS
-# =================================================================
 print("\n💾 Guardando registro en la base de datos...")
 
-conn = None  # ✅ Previene el NameError si la conexión falla
+conn = None 
 
 try:
     conn = get_connection()
     cur = conn.cursor(dictionary=True)
 
-    # Buscar id_estudiante según su código
     cur.execute("SELECT id_estudiante FROM estudiante WHERE codigo = %s", (codigo_estudiante,))
     estudiante = cur.fetchone()
 
@@ -129,7 +112,7 @@ try:
         print("⚠️ No se encontró el estudiante en la base de datos.")
     else:
         id_estudiante = estudiante["id_estudiante"]
-        id_periodo = 1  # Puedes cambiarlo dinámicamente si lo deseas
+        id_periodo = 1 
         path_relativo = personPath
         ts_captura = datetime.now()
         calidad = 0.99
@@ -156,22 +139,18 @@ finally:
         cur.close()
         conn.close()
 
-# =================================================================
 # ENTRENAR MODELO AUTOMÁTICAMENTE
-# =================================================================
 try:
     print("\n🧠 Iniciando entrenamiento automático...")
     base_dir = os.path.dirname(os.path.abspath(__file__))
     script_entrenar = os.path.join(base_dir, "entrenar_rostros.py")
 
-    # ✅ Usamos subprocess.run para ejecutar Python correctamente
+
     subprocess.run([sys.executable, script_entrenar], check=True)
     print("✅ Entrenamiento completado exitosamente.")
 except subprocess.CalledProcessError as e:
     print("❌ Error durante la ejecución del script de entrenamiento:", e)
 except Exception as e:
     print("❌ Error al entrenar el modelo automáticamente:", e)
-# =================================================================
-# FIN
-# =================================================================
+
 print(f"\n🎉 ¡Captura finalizada! Se guardaron {count} imágenes en: {personPath}")

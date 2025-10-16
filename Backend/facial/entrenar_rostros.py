@@ -43,5 +43,5 @@ print("Entrenando...")
 face_recognizer.train(facesData, np.array(labels))
 
 # Guardar el modelo obtenido
-face_recognizer.write('modeloLBPHFace.xml')
-print("Modelo almacenado...")
+face_recognizer.write(model_path)
+print(f" Modelo almacenado correctamente en: {model_path}")

@@ -1,69 +1,168 @@
-/* src/pages/HomePage.css */
-
-body {
+html, body {
+  width: 100%;
+  height: 100%;
   margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f4f6f8;
+  padding: 0;
+  overflow-x: hidden;
+  background: none;
+  overflow-y: auto;  /* ✅ permite scroll vertical si el contenido lo requiere */
+
 }
 
 .home-container {
-  height: 100vh;
+  width: 100vw;
+  min-height: 100vh;                /* ocupa al menos el alto de la pantalla */
+  height: auto;                     /* ✅ permite crecer si hay más contenido */
+  margin: 0;
+  padding: 0 1rem 5rem 1rem;        /* ✅ espacio inferior extra (5rem) */
+  overflow-x: hidden;               /* evita scroll lateral */
+  background: radial-gradient(circle at top, #1e1b4b 0%, #0f172a 100%);
+  color: #f9fafb;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  background: linear-gradient(to right, #eef1f5, #f4f6f8);
-  padding: 20px;
+  justify-content: flex-start;      /* mantenemos el flujo natural vertical */
+  font-family: "Poppins", sans-serif;
+  padding-top: 2rem;
 }
 
-.home-card {
-  background: #fff;
-  padding: 50px 40px;
-  border-radius: 16px;
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+/* Encabezado */
+.home-header {
   text-align: center;
-  max-width: 400px;
+  margin-bottom: 1.5rem;
+}
+
+.home-header h1 {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #c7d2fe;
+  margin-bottom: 0.5rem;
+}
+
+.registro-link {
+  color: #818cf8;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.registro-link:hover {
+  text-decoration: underline;
+}
+
+/* Panel principal */
+.panel-reconocimiento {
+  background: rgba(17, 24, 39, 0.8);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 0 30px rgba(79, 70, 229, 0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 480px;
+  max-width: 90%;
+}
+
+/* Video */
+.video-box {
+  border: 3px solid #6366f1;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.6);
+  transition: all 0.3s ease;
+}
+
+.camera-video {
   width: 100%;
+  height: auto;
+  display: block;
 }
 
-.home-card h1 {
-  font-size: 1.8rem;
-  margin-bottom: 30px;
-  color: #222;
-}
-
-.home-button {
-  background-color: #007bff;
-  color: white;
-  padding: 14px 28px;
+/* Botón */
+.boton-captura {
+  margin-top: 1.5rem;
+  padding: 12px 28px;
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: #fff;
   border: none;
-  border-radius: 8px;
+  border-radius: 30px;
   font-size: 1rem;
+  font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.5);
 }
 
-.home-button:hover {
-  background-color: #0056b3;
+.boton-captura:hover {
+  transform: scale(1.05);
+  background: linear-gradient(135deg, #4338ca, #4f46e5);
 }
 
-.home-button:focus {
-  outline: 2px solid #0056b3;
-  outline-offset: 3px;
+.boton-captura:disabled {
+  background: #a5b4fc;
+  cursor: not-allowed;
 }
 
-.home-register {
-  margin-top: 20px;
-  font-size: 0.95rem;
-  color: #555;
+/* Resultado */
+.resultado {
+  text-align: center;
+  margin-top: 1.5rem;
+  min-height: 60px;
+  transition: all 0.4s ease;
 }
 
-.home-register span {
-  color: #007bff;
+.resultado.ok p {
+  color: #22c55e;
+}
+
+.resultado.fail p {
+  color: #ef4444;
+}
+
+/* Código detectado */
+.codigo-box {
+  margin-top: 10px;
+  background: rgba(99, 102, 241, 0.15);
+  border: 2px solid #6366f1;
+  border-radius: 12px;
+  padding: 0.8rem 1.5rem;
+  display: inline-block;
+  box-shadow: 0 0 15px rgba(79, 70, 229, 0.3);
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+.codigo-box h3 {
+  font-size: 1rem;
+  margin-bottom: 5px;
+  color: #c7d2fe;
+}
+
+.codigo-box span {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #fff;
+}
+
+.curso-info {
+  margin-top: 15px;
+  background: #f0f4ff;
+  border-radius: 10px;
+  padding: 12px 18px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.curso-info h3, .curso-info h4 {
+  margin: 4px 0;
+  color: #1a237e;
+}
+
+.curso-info p {
+  margin: 2px 0 8px;
   font-weight: 500;
-  cursor: pointer;
-  transition: color 0.3s;
 }
 
-.home-register span:hover {
-  color: #004b9a;
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
+
