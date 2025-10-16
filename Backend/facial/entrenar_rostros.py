@@ -2,7 +2,7 @@ import cv2
 import os
 import numpy as np
 
-dataPath = r'D:/PROYECTOS/IA/asistenciaweb/Backend/output/2025-1'
+dataPath = r'D:/Proyectos/AsistencIAWeb/Backend/output/2025-1'
 peopleList = os.listdir(dataPath)
 print('Lista de personas:', peopleList)
 
