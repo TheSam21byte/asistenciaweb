@@ -13,11 +13,13 @@ export default function HomePage() {
 
   useEffect(() => {
     let stream; // Guardamos el stream para cerrarlo después
+    const videoElement = videoRef.current; // Guardamos el elemento actual del ref
+
 
     const iniciarCamara = async () => {
       try {
         stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        if (videoRef.current) videoRef.current.srcObject = stream;
+        if (videoRef.current) videoElement.srcObject = stream;
       } catch (error) {
         console.error("❌ Error al acceder a la cámara:", error);
         alert("No se pudo acceder a la cámara. Verifica los permisos del navegador.");
@@ -30,7 +32,7 @@ export default function HomePage() {
     return () => {
       if (stream) {
         stream.getTracks().forEach((track) => track.stop());
-        if (videoRef.current) videoRef.current.srcObject = null;
+        if (videoElement) videoElement.srcObject = null;
       }
     };
   }, []);
