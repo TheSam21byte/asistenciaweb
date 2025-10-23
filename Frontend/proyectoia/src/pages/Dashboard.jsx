@@ -1,101 +1,130 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import "./Dashboard.css";
 
 function Dashboard() {
   const videoRef = useRef(null);
+  const [status, setStatus] = useState("idle"); // 'idle', 'loading', 'success', 'error'
+  const [message, setMessage] = useState("Pulsa el botón para comenzar el registro.");
 
-  const openCamera = async () => {
-  try {
+  const registrarRostro = async () => {
     const user = JSON.parse(localStorage.getItem("user"));
-    const codigo = user?.codigo;
 
-    if (!codigo) {
-      alert("No se encontró el código del estudiante en sesión.");
+    if (!user || !user.codigo) {
+      setMessage("Debe iniciar sesión antes de registrar el rostro.");
+      setStatus("error");
       return;
     }
 
-    // 🔹 Llamar al backend para iniciar la captura facial
-    const response = await fetch(`http://127.0.0.1:8000/registrar-rostro/${user.codigo}`, {
-        method: "POST",
-    });
+    setStatus("loading");
+    setMessage("Iniciando captura... Por favor, mira fijamente a la cámara.");
 
-    const data = await response.json();
-    alert(data.message || "Captura iniciada correctamente.");
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/api/registrar-rostro/${user.codigo}`,
+        { method: "POST" }
+      );
 
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText);
+      }
+
+      const data = await response.json();
+      setStatus("success");
+      setMessage(
+        data.message || "✅ ¡Rostro registrado correctamente! Ya puedes marcar asistencia."
+      );
     } catch (error) {
-      console.error("Error al registrar rostro:", error);
-      alert("No se pudo iniciar la captura facial.");
+      console.error("❌ Error al registrar el rostro:", error);
+      setStatus("error");
+      setMessage("❌ Error: Código no encontrado o problema con la cámara/servidor.");
     }
   };
 
-  // 🔹 Obtener datos del estudiante almacenados tras el login
+  // === Datos del usuario ===
   const user = JSON.parse(localStorage.getItem("user"));
-
-  // 🔹 Generar nombre completo (manejo de nulls por seguridad)
   const nombreCompleto = user
     ? `${user.nombres ?? ""} ${user.apellidos ?? ""}`.trim()
-    : "Usuario";
-
-  // Registra el rostro y manda a la base de datos
-
-  // Registra el rostro y manda a la base de datos
-const registrarRostro = async () => {
-  const user = JSON.parse(localStorage.getItem("user"));
-  if (!user || !user.codigo) {
-    alert("Debe iniciar sesión antes de registrar el rostro.");
-    return;
-  }
-
-  try {
-    alert("Se iniciará la captura del rostro. No cierres la cámara.");
-
-    // ✅ Ruta correcta: el backend expone /api/registrar-rostro/{codigo}
-    const response = await fetch(`http://127.0.0.1:8000/api/registrar-rostro/${user.codigo}`, {
-      method: "POST",
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(errorText);
-    }
-
-    const data = await response.json();
-    alert(data.message || "¡Rostro registrado correctamente!");
-  } catch (error) {
-    console.error("❌ Error al registrar el rostro:", error);
-    alert("Error al registrar el rostro. Revisa la consola para más detalles.");
-  }
-};
+    : "Estudiante UNAMAD";
+  const primerNombre = nombreCompleto.split(" ")[0] || "Usuario";
 
   return (
-    <div className="dashboard-container">
-      <header className="dashboard-header">
-        <h1>Bienvenido, {nombreCompleto || "Usuario"} 👋</h1>
-        <p>Sistema de Registro Facial — Proyecto IA</p>
-      </header>
+    <div className="dashboard-layout">
+      {/* === Panel lateral izquierdo === */}
+      <aside className="dashboard-panel">
+        <div className="panel-header">
+          <img
+            src="https://enchufate.pe/wp-content/uploads/2024/04/Marca03-1.png"
+            alt="Logo UNAMAD"
+            className="panel-logo"
+          />
+          <h2>Panel Estudiantil</h2>
+        </div>
 
-      <main className="dashboard-content">
-        <section className="dashboard-card">
-          <p>
-            Aquí puedes registrar tu rostro en nuestra base de datos para el sistema
-            de reconocimiento facial.
-          </p>
+        <ul className="panel-list">
+          <li className="highlight-item">
+            <strong>Estudiante:</strong> {nombreCompleto}
+          </li>
+          <li>
+            <strong>Asistencia:</strong>{" "}
+            <strong className="status-active">Activa</strong>
+          </li>
+          <li>
+            <strong>Próxima clase:</strong> 3:00 PM — INGENIERIA ECONOMICA
+          </li>
+          <li>
+            <strong>Notificaciones:</strong>{" "}
+            <strong className="status-alert">2 nuevas</strong>
+          </li>
+          <li>
+            <strong>Docente:</strong> Elena Limones
+          </li>
+        </ul>
+      </aside>
 
-          <button onClick={registrarRostro} className="camera-button">
-            📸 Registrar rostro
-          </button>
+      {/* === Sección principal (derecha) === */}
+      <div className="dashboard-main">
+        <header className="dashboard-header">
+          <h1>Bienvenido, {primerNombre} 👋</h1>
+          <p>Sistema de Asistencia Facial — Aula Virtual UNAMAD</p>
+        </header>
 
-          <div className="video-container">
-            <video
-              ref={videoRef}
-              width="480"
-              height="360"
-              autoPlay
-              onCanPlay={(e) => (e.target.style.display = "block")}
-            ></video>
-          </div>
-        </section>
-      </main>
+        <main className="dashboard-content">
+          <section className={`dashboard-card status-${status}`}>
+            <p className="card-instruction">{message}</p>
+
+            <button
+              onClick={registrarRostro}
+              className="camera-button"
+              disabled={status === "loading"}
+            >
+              {status === "loading"
+                ? "Cargando rostro..."
+                : "📸 Registrar rostro"}
+            </button>
+
+            <div className="video-container">
+              <video
+                ref={videoRef}
+                width="480"
+                height="360"
+                autoPlay
+                muted
+                style={{
+                  display:
+                    status === "loading" || status === "idle"
+                      ? "none"
+                      : "block",
+                }}
+              ></video>
+
+              {(status === "loading" || status === "idle") && (
+                <div className="video-placeholder">Cámara inactiva</div>
+              )}
+            </div>
+          </section>
+        </main>
+      </div>
     </div>
   );
 }

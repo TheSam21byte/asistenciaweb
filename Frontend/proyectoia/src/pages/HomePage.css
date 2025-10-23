@@ -1,32 +1,37 @@
+/*
+ * HomePage.css - Panel modificado para ser más suave y menos sólido.
+ * Paleta: #ffecf3 (fondo/panel), #ff4384 (acento), #001f3f (texto/borde oscuro)
+ */
+
 html, body {
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
   overflow-x: hidden;
-  background: none;
-  overflow-y: auto;  /* ✅ permite scroll vertical si el contenido lo requiere */
-
+  background-color: #ffecf3; /* Fondo principal claro */
+  overflow-y: auto;
 }
 
 .home-container {
   width: 100vw;
-  min-height: 100vh;                /* ocupa al menos el alto de la pantalla */
-  height: auto;                     /* ✅ permite crecer si hay más contenido */
+  min-height: 100vh;
+  height: auto;
   margin: 0;
-  padding: 0 1rem 5rem 1rem;        /* ✅ espacio inferior extra (5rem) */
-  overflow-x: hidden;               /* evita scroll lateral */
-  background: radial-gradient(circle at top, #1e1b4b 0%, #0f172a 100%);
-  color: #f9fafb;
+  padding: 0 1rem 5rem 1rem;
+  overflow-x: hidden;
+  /* Fondo radial degradado con tonos de la paleta */
+  background: radial-gradient(circle at top, #ffe4eb 0%, #ffecf3 100%);
+  color: #001f3f; /* Color de texto oscuro principal */
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;      /* mantenemos el flujo natural vertical */
+  justify-content: flex-start;
   font-family: "Poppins", sans-serif;
   padding-top: 2rem;
 }
 
-/* Encabezado */
+/* --- Encabezado --- */
 .home-header {
   text-align: center;
   margin-bottom: 1.5rem;
@@ -34,40 +39,50 @@ html, body {
 
 .home-header h1 {
   font-size: 2rem;
-  font-weight: 600;
-  color: #c7d2fe;
+  font-weight: 700;
+  color: #ff4384; /* Color de acento principal */
   margin-bottom: 0.5rem;
 }
 
 .registro-link {
-  color: #818cf8;
+  color: #e93678; /* Color de acento secundario */
   font-weight: 600;
   cursor: pointer;
 }
 
 .registro-link:hover {
   text-decoration: underline;
+  color: #ff4384;
 }
 
-/* Panel principal */
+/* -------------------------------------- */
+/* --- MODIFICACIÓN CLAVE: Panel principal (Tarjeta) --- */
 .panel-reconocimiento {
-  background: rgba(17, 24, 39, 0.8);
+  /* Fondo más suave: Rosa pálido/Cremoso de la paleta de login, con ligera opacidad */
+  background-color: rgba(255, 236, 243, 0.95); /* #ffecf3 con opacidad */
+  /* Borde sutil del color de acento oscuro para darle definición */
+  border: 2px solid #ff4384; 
   border-radius: 20px;
   padding: 2rem;
-  box-shadow: 0 0 30px rgba(79, 70, 229, 0.4);
+  /* Sombra más suave con el color de acento principal */
+  box-shadow: 0 5px 20px rgba(255, 67, 132, 0.4);
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 480px;
   max-width: 90%;
+  /* Texto oscuro para alto contraste sobre fondo claro */
+  color: #001f3f; 
 }
+/* -------------------------------------- */
 
-/* Video */
+/* --- Video --- */
 .video-box {
-  border: 3px solid #6366f1;
+  border: 3px solid #ff4384; /* Borde con acento principal */
   border-radius: 15px;
   overflow: hidden;
-  box-shadow: 0 0 20px rgba(99, 102, 241, 0.6);
+  /* Sombra de video con acento */
+  box-shadow: 0 0 20px rgba(255, 67, 132, 0.7);
   transition: all 0.3s ease;
 }
 
@@ -77,11 +92,12 @@ html, body {
   display: block;
 }
 
-/* Botón */
+/* --- Botón --- */
 .boton-captura {
   margin-top: 1.5rem;
   padding: 12px 28px;
-  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  /* Degradado con colores de acento */
+  background: linear-gradient(135deg, #ff4384, #e93678);
   color: #fff;
   border: none;
   border-radius: 30px;
@@ -89,20 +105,22 @@ html, body {
   font-weight: bold;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.5);
+  /* Sombra con el color de acento */
+  box-shadow: 0 4px 15px rgba(255, 67, 132, 0.5);
 }
 
 .boton-captura:hover {
   transform: scale(1.05);
-  background: linear-gradient(135deg, #4338ca, #4f46e5);
+  /* Degradado ligeramente más oscuro en hover */
+  background: linear-gradient(135deg, #e93678, #ff4384);
 }
 
 .boton-captura:disabled {
-  background: #a5b4fc;
+  background: #ffc2d1; /* Color de deshabilitado pálido de la paleta */
   cursor: not-allowed;
 }
 
-/* Resultado */
+/* --- Resultado --- */
 .resultado {
   text-align: center;
   margin-top: 1.5rem;
@@ -110,41 +128,50 @@ html, body {
   transition: all 0.4s ease;
 }
 
+.resultado p {
+  color: #001f3f; /* Texto oscuro sobre el panel claro */
+}
+
 .resultado.ok p {
-  color: #22c55e;
+  color: #22c55e; /* Color verde para éxito (mantenido por convención) */
+  font-weight: bold;
 }
 
 .resultado.fail p {
-  color: #ef4444;
+  color: #ef4444; /* Color rojo para fallo (mantenido por convención) */
+  font-weight: bold;
 }
 
-/* Código detectado */
+/* --- Código detectado --- */
 .codigo-box {
   margin-top: 10px;
-  background: rgba(99, 102, 241, 0.15);
-  border: 2px solid #6366f1;
+  /* Fondo semitransparente con el color oscuro de la paleta */
+  background: rgba(0, 31, 63, 0.1);
+  border: 2px solid #ff4384; /* Borde con acento principal */
   border-radius: 12px;
   padding: 0.8rem 1.5rem;
   display: inline-block;
-  box-shadow: 0 0 15px rgba(79, 70, 229, 0.3);
+  /* Sombra con el color de acento */
+  box-shadow: 0 0 15px rgba(255, 67, 132, 0.3);
   animation: fadeIn 0.6s ease-in-out;
 }
 
 .codigo-box h3 {
   font-size: 1rem;
   margin-bottom: 5px;
-  color: #c7d2fe;
+  color: #e93678; /* Color de acento secundario */
 }
 
 .codigo-box span {
   font-size: 1.4rem;
   font-weight: bold;
-  color: #fff;
+  color: #001f3f; /* Texto del código en color oscuro */
 }
 
+/* --- Información del curso --- */
 .curso-info {
   margin-top: 15px;
-  background: #f0f4ff;
+  background: #ffecf3; /* Fondo claro de la paleta */
   border-radius: 10px;
   padding: 12px 18px;
   text-align: center;
@@ -153,16 +180,16 @@ html, body {
 
 .curso-info h3, .curso-info h4 {
   margin: 4px 0;
-  color: #1a237e;
+  color: #001f3f; /* Texto oscuro */
 }
 
 .curso-info p {
   margin: 2px 0 8px;
   font-weight: 500;
+  color: #001f3f; /* Texto oscuro */
 }
 
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(10px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
