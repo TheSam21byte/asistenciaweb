@@ -1,14 +1,9 @@
-import mysql.connector
 from tabulate import tabulate
 import unicodedata
+from db import get_connection
 
 # ---------- Config DB ----------
-CONN = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="211221",
-    database="dbia",          # <--- usa tu BD real
-)
+CONN = get_connection
 CUR = CONN.cursor(dictionary=True)
 
 def strip_accents(s: str) -> str:
@@ -28,7 +23,7 @@ def seleccionar_periodo() -> int:
     per = CUR.fetchall()
     if not per:
         raise RuntimeError("No hay periodos en la tabla 'periodo'.")
-    print("\n📆 Periodos:")
+    print("\n Periodos:")
     print(tabulate(per, headers="keys", tablefmt="fancy_grid"))
     while True:
         try:
@@ -53,14 +48,14 @@ def upsert_estudiante(codigo: str, nombres: str, apellidos: str, dni: str) -> in
             WHERE id_estudiante=%s
         """, (nombres, apellidos, dni, correo, id_est))
         CONN.commit()
-        print(f"ℹ️  Estudiante ya existía. Actualizado. (ID {id_est}, correo {correo})")
+        print(f"  Estudiante ya existía. Actualizado. (ID {id_est}, correo {correo})")
         return id_est
     CUR.execute("""
         INSERT INTO estudiante (codigo, nombres, apellidos, dni, correo_institucional, activo)
         VALUES (%s,%s,%s,%s,%s,1)
     """, (codigo, nombres, apellidos, dni, correo))
     CONN.commit()
-    print(f"✅ Estudiante registrado. Correo: {correo}")
+    print(f" Estudiante registrado. Correo: {correo}")
     return CUR.lastrowid
 
 def listar_cursos():
@@ -74,7 +69,7 @@ def listar_cursos():
     cursos = CUR.fetchall()
     if not cursos:
         raise RuntimeError("No hay cursos en la tabla 'curso'.")
-    print("\n📚 Cursos:")
+    print("\n Cursos:")
     print(tabulate(cursos, headers="keys", tablefmt="fancy_grid"))
     return [c["id_curso"] for c in cursos]
 
@@ -83,7 +78,7 @@ def listar_aulas():
     aulas = CUR.fetchall()
     if not aulas:
         raise RuntimeError("No hay aulas en la tabla 'aula'.")
-    print("\n🏫 Aulas:")
+    print("\n Aulas:")
     print(tabulate(aulas, headers="keys", tablefmt="fancy_grid"))
     return [a["id_aula"] for a in aulas]
 
@@ -94,14 +89,14 @@ def matricular(id_estudiante: int, id_curso: int, id_aula: int, id_periodo: int)
         WHERE id_estudiante=%s AND id_curso=%s AND id_periodo=%s
     """, (id_estudiante, id_curso, id_periodo))
     if CUR.fetchone():
-        print(f"⚠️  Ya estaba matriculado en curso {id_curso} (periodo {id_periodo}).")
+        print(f"  Ya estaba matriculado en curso {id_curso} (periodo {id_periodo}).")
         return
     CUR.execute("""
         INSERT INTO matricula (id_estudiante, id_curso, id_aula, id_periodo)
         VALUES (%s, %s, %s, %s)
     """, (id_estudiante, id_curso, id_aula, id_periodo))
     CONN.commit()
-    print(f"✅ Matrícula creada (estudiante {id_estudiante} → curso {id_curso}, aula {id_aula}, periodo {id_periodo}).")
+    print(f" Matrícula creada (estudiante {id_estudiante} → curso {id_curso}, aula {id_aula}, periodo {id_periodo}).")
 
 def resumen_matriculas():
     CUR.execute("""
@@ -119,7 +114,7 @@ def resumen_matriculas():
         ORDER BY e.codigo, c.id_curso;
     """)
     rows = CUR.fetchall()
-    print("\n📋 Resumen de matrículas:")
+    print("\n Resumen de matrículas:")
     if rows:
         print(tabulate(rows, headers="keys", tablefmt="fancy_grid"))
     else:
