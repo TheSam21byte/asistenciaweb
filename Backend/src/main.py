@@ -14,6 +14,7 @@ import cv2
 import numpy as np
 import os
 from fastapi import Body
+from services import admin_routes
 
 
 # --- Configuración del limitador ---
@@ -29,6 +30,7 @@ app = FastAPI(
 app.state.limiter = limiter
 app.add_middleware(SlowAPIMiddleware)
 app.include_router(face_router, prefix="/api")
+app.include_router(admin_routes.router)
 
 # --- Manejo de errores personalizado para RateLimitExceeded ---
 @app.exception_handler(RateLimitExceeded)

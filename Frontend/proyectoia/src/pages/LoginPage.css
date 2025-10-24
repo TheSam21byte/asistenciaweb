@@ -1,94 +1,197 @@
-/* Asegura que ocupe toda la pantalla */
-html, body {
-  height: 100%;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  background-color: #0f0f0f;
-  font-family: "Poppins", sans-serif;
-  overflow: hidden;
-}
-
-/* Contenedor principal con fondo completo */
+/* Estructura general */
 .login-container {
   display: flex;
-  align-items: center;
-  justify-content: center;
   height: 100vh;
   width: 100vw;
-  background: linear-gradient(to right, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.95)),
-    url("https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1350&q=80");
-  background-size: cover;
-  background-position: center;
+  font-family: "Poppins", sans-serif;
+  background-color: #ffecf3;
 }
 
-/* Tarjeta de login */
-.login-card {
-  background: rgba(255, 255, 255, 0.1);
-  padding: 40px;
-  border-radius: 16px;
-  backdrop-filter: blur(12px);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-  width: 400px;
-  text-align: center;
-  color: #fff;
+/* --- Columna izquierda (formulario) --- */
+.login-box {
+  width: 50%;
+  background-color: #ffecf3;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #001f3f;
+  padding: 50px;
+  position: relative;
 }
 
-/* Título */
-.login-card h2 {
-  margin-bottom: 20px;
-  font-size: 28px;
+/* Efectos decorativos sutiles en el fondo */
+.login-box::before {
+  content: "";
+  position: absolute;
+  top: -25%;
+  left: -15%;
+  width: 250px;
+  height: 250px;
+  background: rgba(255, 67, 132, 0.2);
+  border-radius: 50%;
+  filter: blur(40px);
+}
+
+.login-box::after {
+  content: "";
+  position: absolute;
+  bottom: -25%;
+  right: -15%;
+  width: 300px;
+  height: 300px;
+  background: rgba(255, 67, 132, 0.15);
+  border-radius: 50%;
+  filter: blur(40px);
+}
+
+/* Contenido */
+.logo-institucional {
+  width: 380px;           /* ← antes 200px, ahora más grande */
+  margin-bottom: 35px;
+  object-fit: contain;
+  z-index: 2;
+  filter: drop-shadow(0 3px 5px rgba(0, 0, 0, 0.25));
+  transition: transform 0.4s ease;
+}
+
+.logo-institucional:hover {
+  transform: scale(1.03); /* pequeño efecto al pasar el mouse */
+}
+
+
+
+.login-box h1 {
+  font-size: 30px;
   font-weight: 700;
-  color: #fff;
+  margin-bottom: 20px;
+  color: #ff4384;
+  z-index: 2;
 }
 
-/* Inputs */
-.login-card input {
+/* Formulario */
+.login-form {
   width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  border: none;
-  border-radius: 8px;
+  max-width: 320px;
+  z-index: 2;
+}
+
+.form-group {
+  margin-bottom: 18px;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  color: #001f3f;
+  font-weight: 500;
+}
+
+.login-form input {
+  width: 100%;
+  padding: 10px;
+  font-size: 15px;
+  border: 2px solid #ff4384;
+  border-radius: 6px;
   outline: none;
-  background: rgba(255, 255, 255, 0.85);
-  font-size: 16px;
-  transition: box-shadow 0.3s ease;
+  background-color: white;
+  color: #001f3f;
+  transition: box-shadow 0.3s, border-color 0.3s;
 }
 
-.login-card input:focus {
-  box-shadow: 0 0 8px rgba(88, 101, 242, 0.8);
+.login-form input:focus {
+  border-color: #ff4384;
+  box-shadow: 0 0 8px rgba(255, 67, 132, 0.4);
 }
 
-/* Botón */
-.login-card button {
+/* --- Botón --- */
+.login-form button {
   width: 100%;
-  background: linear-gradient(90deg, #6a11cb, #2575fc);
-  border: none;
-  color: #fff;
-  font-size: 16px;
-  font-weight: bold;
   padding: 12px;
-  border-radius: 8px;
+  background-color: #ff4384;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
   cursor: pointer;
-  margin-top: 15px;
-  transition: transform 0.2s, opacity 0.3s;
+  font-weight: 600;
+  transition: all 0.3s ease;
 }
 
-.login-card button:hover {
-  transform: scale(1.03);
-  opacity: 0.9;
+.login-form button:hover {
+  background-color: #e93678;
+  transform: translateY(-2px);
 }
 
 /* Mensaje de error */
 .error {
-  color: #ff6b6b;
+  color: #fff;
+  background-color: rgba(255, 67, 132, 0.8);
+  padding: 8px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  text-align: center;
   font-size: 14px;
-  margin-top: 5px;
 }
 
-/* Footer */
-.footer {
-  font-size: 13px;
-  color: #ddd;
+/* Enlaces */
+.links {
+  margin-top: 15px;
+  z-index: 2;
+}
+
+.links a {
+  color: #ff4384;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.links a:hover {
+  text-decoration: underline;
+}
+
+/* Información inferior */
+.info-sections {
   margin-top: 25px;
+  font-size: 13px;
+  color: #001f3f;
+  line-height: 1;
+  z-index: 2;
+}
+
+/* --- Columna derecha (imagen difuminada) --- */
+.login-image {
+  width: 50%;
+  background: url("https://usil-blog.s3.amazonaws.com/PROD/blog/image/Deserci%C3%B3n-universitaria%20%281%29.png")
+    no-repeat center center;
+  background-size: cover;
+  filter: blur(3px) brightness(0.9);
+  position: relative;
+}
+
+.login-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 236, 243, 0.3);
+}
+
+/* --- Responsive --- */
+@media (max-width: 900px) {
+  .login-container {
+    flex-direction: column;
+  }
+
+  .login-box {
+    width: 100%;
+    height: 60%;
+    border-radius: 0 0 40px 40px;
+  }
+
+  .login-image {
+    display: none;
+  }
 }
