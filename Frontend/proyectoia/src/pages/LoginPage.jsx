@@ -19,7 +19,8 @@ export default function LoginPage() {
       localStorage.setItem("user", JSON.stringify(data));
       navigate("/dashboard");
     } catch (err) {
-      setError(err.message);
+      console.error(err);
+      setError("Código inválido o no registrado.");
     } finally {
       setLoading(false);
     }
@@ -27,27 +28,47 @@ export default function LoginPage() {
 
   return (
     <div className="login-container">
-      <div className="login-card">
-        <h2>Validar Estudiante</h2>
+      {/* Sección izquierda: formulario */}
+      <div className="login-box">
+        <img
+          src="https://aula-virtual.unamad.edu.pe/images/themes/unamad/logo.png"
+          alt="Logo Universidad"
+          className="logo-institucional"
+        />
+        <h1>Aula Virtual</h1>
 
-        <form onSubmit={handleLogin}>
-          <input
-            type="text"
-            placeholder="Código de estudiante"
-            value={codigo}
-            onChange={(e) => setCodigo(e.target.value)}
-            required
-          />
+        <form onSubmit={handleLogin} className="login-form">
+          <div className="form-group">
+            <label htmlFor="codigo">Código de estudiante</label>
+            <input
+              id="codigo"
+              type="text"
+              placeholder="Ingrese su código"
+              value={codigo}
+              onChange={(e) => setCodigo(e.target.value)}
+              required
+            />
+          </div>
 
-          {error && <p className="error">{error}</p>}
+          {error && <div className="error">{error}</div>}
 
           <button type="submit" disabled={loading}>
-            {loading ? "Validando..." : "Entrar"}
+            {loading ? "Ingresando..." : "Ingresar"}
           </button>
         </form>
 
-        <p className="footer">Proyecto IA — Reconocimiento Facial</p>
+        <div className="info-sections">
+          <p>
+            <strong>Biblioteca</strong>
+          </p>
+          <p>
+            <strong>Convocatoria Beca Permanencia 2025</strong>
+          </p>
+        </div>
       </div>
+
+      {/* Sección derecha: imagen difuminada */}
+      <div className="login-image"></div>
     </div>
   );
 }

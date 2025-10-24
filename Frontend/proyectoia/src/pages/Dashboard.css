@@ -1,119 +1,242 @@
-/* === Fondo completo estilo tecnológico === */
-html, body {
+:root {
+  --color-background-light-pink: #ffecf3;
+  --color-primary-pink: #ff4384;
+  --color-dark-blue: #0d3b66;
+  --color-text-dark: #001f3f;
+}
+
+/* === Fondo global === */
+html,
+body {
   margin: 0;
   padding: 0;
   height: 100%;
   font-family: "Poppins", sans-serif;
-  background-color: #0b0b0c;
+  background-color: var(--color-background-light-pink);
 }
 
-/* Contenedor principal */
-.dashboard-container {
-  min-height: 100vh;
+/* === Layout principal === */
+.dashboard-layout {
+  display: flex;
+  height: 100vh;
   width: 100vw;
-  background: linear-gradient(
-      rgba(10, 10, 10, 0.85),
-      rgba(15, 15, 15, 0.95)
-    ),
-    url("https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1350&q=80");
-  background-size: cover;
-  background-position: center;
-  color: #fff;
+}
+
+/* === Panel lateral izquierdo === */
+.dashboard-panel {
+  flex: 1;
+  background: linear-gradient(180deg, #c72e63, #ff4384);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  color: white;
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+}
+
+.panel-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* centra horizontalmente */
+  text-align: center;
+  width: 100%;
+}
+
+.panel-logo {
+  height: 85px;
+  margin-bottom: 1rem;
+  filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.3));
+}
+
+
+.dashboard-panel h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 1.5rem;
+}
+
+.panel-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem 0;
+  width: 100%;
+}
+
+.panel-list li {
+  background: rgba(255, 255, 255, 0.15);
+  margin-bottom: 12px;
+  padding: 12px 15px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: white;
+  transition: 0.3s;
+}
+
+.panel-list li:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.panel-button {
+  align-self: stretch;
+  background: white;
+  color: var(--color-primary-pink);
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: 0.3s ease;
+}
+
+.panel-button:hover {
+  transform: translateY(-2px);
+  background: #f0f0f0;
+}
+
+/* === Derecha === */
+.dashboard-main {
+  flex: 3;
+  position: relative;
+  background: var(--color-background-light-pink);
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
-/* === Header === */
+/* Imagen difuminada de fondo */
+.background-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("https://usil-blog.s3.amazonaws.com/PROD/blog/image/Deserci%C3%B3n-universitaria%20%281%29.png")
+    center/cover no-repeat;
+  filter: blur(20px) brightness(0.8);
+  opacity: 0.4;
+  z-index: 0;
+}
+
+/* Contenido principal */
 .dashboard-header {
   text-align: center;
-  margin-top: 60px;
-  margin-bottom: 40px;
+  z-index: 1;
+  margin-bottom: 30px;
 }
 
 .dashboard-header h1 {
-  font-size: 2.5rem;
+  font-size: 2.6rem;
   font-weight: 700;
-  letter-spacing: 1px;
-  color: #ffffff;
+  color: var(--color-dark-blue);
 }
 
 .dashboard-header p {
   font-size: 1.1rem;
-  color: #c9c9c9;
-  margin-top: 10px;
+  color: var(--color-primary-pink);
+  margin-top: 8px;
 }
 
-/* === Contenido principal === */
-.dashboard-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-grow: 1;
-  width: 100%;
-}
-
-/* Tarjeta con efecto glass */
 .dashboard-card {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(12px);
+  background: #ffffffd8;
   border-radius: 20px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   padding: 40px;
-  width: 500px;
+  width: clamp(300px, 80%, 500px);
   text-align: center;
-  animation: fadeIn 0.8s ease forwards;
+  position: relative;
+  z-index: 1;
+  backdrop-filter: blur(10px);
+  border: 2px solid transparent;
 }
 
-/* Animación sutil de aparición */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.dashboard-card.status-success {
+  border-color: #28a745;
+}
+.dashboard-card.status-error {
+  border-color: #dc3545;
+}
+.dashboard-card.status-loading {
+  border-color: #ffc107;
 }
 
-/* Texto descriptivo */
-.dashboard-card p {
+.card-instruction {
   font-size: 1.1rem;
-  color: #e1e1e1;
+  color: var(--color-text-dark);
   margin-bottom: 25px;
   line-height: 1.5;
 }
 
-/* === Botón de cámara === */
 .camera-button {
-  background: linear-gradient(90deg, #6a11cb, #2575fc);
+  background: var(--color-primary-pink);
   color: #fff;
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 1.1rem;
+  font-weight: 600;
   border: none;
-  padding: 12px 20px;
+  padding: 12px 30px;
   border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(255, 67, 132, 0.4);
 }
 
 .camera-button:hover {
-  transform: scale(1.05);
-  background: linear-gradient(90deg, #8e2de2, #4a00e0);
+  transform: scale(1.03);
+  background: #e93678;
 }
 
-/* === Video === */
 .video-container {
-  margin-top: 25px;
+  margin-top: 30px;
   display: flex;
   justify-content: center;
 }
 
 .video-container video {
-  display: none;
+  width: 100%;
+  max-width: 400px;
   border-radius: 12px;
-  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.5);
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 3px solid var(--color-dark-blue);
   background-color: #000;
+}
+
+.video-placeholder {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f0f0;
+  color: #666;
+  border-radius: 12px;
+  border: 2px dashed #bbb;
+  height: 200px;
+  width: 100%;
+}
+
+/* === Responsivo === */
+@media (max-width: 900px) {
+  .dashboard-layout {
+    flex-direction: column;
+  }
+
+  .dashboard-panel {
+    width: 100%;
+    border-bottom: 4px solid white;
+    align-items: center;
+    text-align: center;
+  }
+
+  .dashboard-main {
+    padding-top: 2rem;
+  }
+
+  .panel-logo {
+    height: 60px;
+  }
+
+  .dashboard-header h1 {
+    font-size: 2rem;
+  }
 }
